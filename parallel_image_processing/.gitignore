@@ -1,0 +1,10 @@
+# Build outputs
+image_filter
+*.o
+*.exe
+
+# Output images and data
+output_*.jpg
+test_traffic.jpg
+*.png
+benchmark_results.csv
