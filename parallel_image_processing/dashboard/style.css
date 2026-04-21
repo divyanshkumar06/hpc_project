@@ -39,6 +39,13 @@ body {
     padding: 2rem;
 }
 
+#start-sim-btn:hover {
+    background: #db2777 !important;
+}
+#reset-sim-btn:hover {
+    background: rgba(255,255,255,0.2) !important;
+}
+
 header {
     text-align: center;
     padding: 3rem 0;

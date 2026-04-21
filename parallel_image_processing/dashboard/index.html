@@ -25,6 +25,25 @@
     </header>
 
     <main class="container">
+        <!-- Live Simulation Section -->
+        <section class="glass box-glow" style="margin-bottom: 2rem; border-color: #f472b6;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: #fce7f3; margin: 0;">🎮 OpenMP Dynamic Thread Simulator</h2>
+                <div>
+                    <button id="start-sim-btn" style="background: #ec4899; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold;">Run Simulation</button>
+                    <button id="reset-sim-btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; margin-left: 0.5rem;">Reset</button>
+                </div>
+            </div>
+            <p style="font-size: 0.9rem; color: #fbcfe8; margin-top:0;">Visualizing <span style="font-family: monospace;">#pragma omp parallel for schedule(dynamic)</span> simulating 16 physical threads tearing through 64x64 cache blocks.</p>
+            <div style="position: relative; width: 100%; aspect-ratio: 16/9; background: #0f172a; border-radius: 8px; overflow: hidden; border: 2px solid #334155;">
+                <canvas id="sim-canvas" style="display: block; width: 100%; height: 100%;"></canvas>
+                <div id="sim-stats" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 0.5rem; border-radius: 6px; font-family: monospace; color: #4ade80;">
+                    Tiles Done: <span id="sim-done">0</span>%<br>
+                    Active Threads: 16
+                </div>
+            </div>
+        </section>
+
         <!-- Advanced Features callout -->
         <section class="glass box-glow" style="margin-bottom: 2rem; border-color: #818cf8; background: rgba(49, 46, 129, 0.4);">
             <h2 style="color: #c7d2fe; margin-top: 0;">⚡ Masterclass HPC Optimizations Enabled</h2>
