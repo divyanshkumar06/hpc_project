@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 
 csv_file = 'benchmark_results.csv'
@@ -9,38 +10,43 @@ if not os.path.exists(csv_file):
     exit(1)
 
 # Read the CSV file
-df = pd.read_csv(csv_file, names=['Threads', 'SerialTime', 'ParallelTime', 'Speedup', 'Efficiency'])
+df = pd.read_csv(csv_file)
+df = df.sort_values(by=['filter_name', 'threads'])
 
-# Sort by threads just in case
-df = df.sort_values(by='Threads')
+# Setup seaborn style
+sns.set_theme(style="whitegrid")
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+fig.suptitle('HPC OpenMP Performance Analysis', fontsize=18, fontweight='bold', y=1.05)
 
-# Create a figure with two subplots
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
-fig.suptitle('OpenMP Parallelization Performance', fontsize=16)
+# Subplot 1: Speedup vs Threads
+for filter_name in df['filter_name'].unique():
+    subset = df[df['filter_name'] == filter_name]
+    ax1.plot(subset['threads'], subset['speedup'], marker='o', linewidth=2, label=filter_name)
 
-# Subplot 1: Ideal vs Actual Speedup
-ax1.plot(df['Threads'], df['Threads'], 'k--', label='Ideal Speedup')
-ax1.plot(df['Threads'], df['Speedup'], 'b-o', label='Actual Speedup', linewidth=2)
+# Ideal Speedup reference line
+max_threads = df['threads'].max()
+ax1.plot([1, max_threads], [1, max_threads], 'k--', alpha=0.5, label='Ideal Linear Speedup')
+
 ax1.set_xlabel('Number of Threads', fontsize=12)
-ax1.set_ylabel('Speedup', fontsize=12)
-ax1.set_title('Speedup Analysis', fontsize=14)
-ax1.set_xticks(df['Threads'])
-ax1.grid(True, linestyle='--', alpha=0.7)
-ax1.legend()
+ax1.set_ylabel('Speedup Factor', fontsize=12)
+ax1.set_title("Amdahl's Law Actual Speedup", fontsize=14)
+ax1.set_xticks(df['threads'].unique())
+ax1.legend(loc='upper left')
 
 # Subplot 2: Execution Time Comparison
-ax2.plot(df['Threads'], df['SerialTime'], 'r--', label='Serial Time (Base)')
-ax2.plot(df['Threads'], df['ParallelTime'], 'g-o', label='Parallel Time', linewidth=2)
+for filter_name in df['filter_name'].unique():
+    subset = df[df['filter_name'] == filter_name]
+    ax2.plot(subset['threads'], subset['parallel_time'], marker='s', linewidth=2, label=filter_name)
+
 ax2.set_xlabel('Number of Threads', fontsize=12)
 ax2.set_ylabel('Execution Time (seconds)', fontsize=12)
-ax2.set_title('Execution Time vs Threads', fontsize=14)
-ax2.set_xticks(df['Threads'])
-ax2.grid(True, linestyle='--', alpha=0.7)
-ax2.legend()
-
+ax2.set_title('Strong Scaling: Time vs Threads', fontsize=14)
+ax2.set_xticks(df['threads'].unique())
+ax2.legend(loc='upper right')
+ax2.set_yscale('log') # Log scale is often better for execution time
 plt.tight_layout()
-plt.subplots_adjust(top=0.9)
 
+# Save
 output_file = 'speedup_graph.png'
-plt.savefig(output_file, dpi=300)
+plt.savefig(output_file, dpi=300, bbox_inches='tight')
 print(f"Graph successfully saved as {output_file}")

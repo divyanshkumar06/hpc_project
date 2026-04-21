@@ -1,14 +1,12 @@
 CXX = g++
-CXXFLAGS = -O3 -fopenmp -Wall -Wextra -std=c++17
-INCLUDES = `pkg-config --cflags opencv4`
-LIBS = `pkg-config --libs opencv4`
+CXXFLAGS = -O3 -fopenmp -mavx2 -mfma -Wall -Wextra -std=c++17
 TARGET = image_filter
 SRCS = main.cpp
 
 all: $(TARGET)
 
 $(TARGET): $(SRCS)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(TARGET) $(SRCS) $(LIBS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRCS)
 
 clean:
-	rm -f $(TARGET) output_*.jpg benchmark_results.csv *.png
+	rm -f $(TARGET) output_*.jpg benchmark_results.csv dashboard/data.json *.png test_traffic.jpg *.exe

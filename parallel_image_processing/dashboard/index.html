@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HPC Parallel Image Processing Dashboard</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+
+    <header>
+        <div class="container">
+            <h1><span class="gradient-text">HPC</span> Parallel Image Processing</h1>
+            <p>Accelerating 2D Convolutions with OpenMP Shared-Memory Parallelism</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Advanced Features callout -->
+        <section class="glass box-glow" style="margin-bottom: 2rem; border-color: #818cf8; background: rgba(49, 46, 129, 0.4);">
+            <h2 style="color: #c7d2fe; margin-top: 0;">⚡ Masterclass HPC Optimizations Enabled</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <h3 style="color: #a5b4fc; margin-bottom: 0.5rem;">[1] Cache Blocking (Tiling)</h3>
+                    <p style="font-size: 0.9rem; color: #e0e7ff; margin:0;">Standard convolution wastes L1 cache by scanning long rows. This implementation uses 64x64 chunks to ensure data fits in the ultra-fast L1 cache, mathematically boosting the memory-bound upper limit.</p>
+                </div>
+                <div>
+                    <h3 style="color: #a5b4fc; margin-bottom: 0.5rem;">[2] AVX2 Explicit Vectorization</h3>
+                    <p style="font-size: 0.9rem; color: #e0e7ff; margin:0;">Using `<immintrin.h>`, we bypass generic compiler auto-vectorization. The Image Inversion algorithm manually loads 32-bytes (<span style="font-family: monospace;">_mm256_loadu_si256</span>) to crush 32 pixels per clock cycle within every thread.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Overview Stats -->
+        <section class="stats-grid">
+            <div class="stat-card glass box-glow">
+                <h3>Hardware Architecture</h3>
+                <div class="value">AMD Ryzen 7</div>
+                <div class="sub-value">8 Cores / 16 Threads (7840HS)</div>
+            </div>
+            <div class="stat-card glass box-glow">
+                <h3>Peak Speedup</h3>
+                <div class="value" id="peak-speedup">--</div>
+                <div class="sub-value">Real-world vs Serial baseline</div>
+            </div>
+            <div class="stat-card glass box-glow">
+                <h3>Image Resolution</h3>
+                <div class="value">810 x 1080</div>
+                <div class="sub-value">3 Channels (RGB)</div>
+            </div>
+        </section>
+
+        <!-- Image Comparison Section -->
+        <section class="image-showcase glass">
+            <h2>Visualizing Convolutions</h2>
+            <div class="filter-selector">
+                <button class="active" data-filter="gaussian">Gaussian Blur</button>
+                <button data-filter="gaussian" data-tiled="true" style="border-color: #a7f3d0;">Tiled Blur (64x64)</button>
+                <button data-filter="grayscale">Grayscale</button>
+                <button data-filter="sepia">Sepia Tone</button>
+                <button data-filter="sharpen">Sharpening</button>
+                <button data-filter="sobel">Sobel Edges</button>
+                <button data-filter="inversion" style="border-color: #fca5a5;">Inversion (AVX2)</button>
+            </div>
+            
+            <div class="split-slider-container" id="slider-container">
+                <img src="../test_traffic.jpg" alt="Original Image" id="img-original" class="slider-img">
+                
+                <div class="slider-overlay" id="slider-overlay">
+                    <img src="../output_gaussian.jpg" alt="Processed Image" id="img-processed" class="slider-img">
+                </div>
+                
+                <div class="slider-handle" id="slider-handle">
+                    <div class="slider-handle-line"></div>
+                    <div class="slider-handle-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline><polyline points="21 18 15 12 21 6"></polyline><polyline points="3 18 9 12 3 6"></polyline></svg>
+                    </div>
+                </div>
+                
+                <div class="slider-label label-left">Original</div>
+                <div class="slider-label label-right gradient-text">Processed</div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="chart-container glass">
+                <h2>Execution Time Scaling</h2>
+                <canvas id="timeChart"></canvas>
+            </div>
+            <div class="chart-container glass">
+                <h2>Amdahl's Law vs Actual Speedup</h2>
+                <canvas id="speedupChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Data Table -->
+        <section class="data-section glass">
+            <h2>Raw Performance Metrics</h2>
+            <div class="table-container">
+                <table id="metricsTable">
+                    <thead>
+                        <tr>
+                            <th>Filter</th>
+                            <th>Threads</th>
+                            <th>Serial Time (s)</th>
+                            <th>Parallel Time (s)</th>
+                            <th>Speedup</th>
+                            <th>Efficiency</th>
+                            <th>Hardware Diagnosis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Built for High-Performance Computing demonstration.</p>
+    </footer>
+
+    <!-- Chart Configuration and Data -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

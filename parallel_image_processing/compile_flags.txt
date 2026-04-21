@@ -1,0 +1,4 @@
+-fopenmp
+-mavx2
+-mfma
+-I.clangd-omp
